@@ -66,7 +66,27 @@ function readnodecapacityfile(filepath::String; comment::Char='#',
     capacities = Dict{Int64,Tuple{Int64,Int64}}()
     
     # TODO: implement this function
-    throw("The readnodecapacityfile function is not implemented yet.");
+    # Open the file for reading
+    open(filepath, "r") do file
+        # Process each line in the file
+        for line in eachline(file)
+            # Skip comment lines or empty lines
+            if startswith(line, comment) || isempty(line)
+                continue
+            end
+
+            # Split the line based on the delimiter
+            fields = split(line, delim)
+            
+            # Parse the node ID, in-degree, and out-degree capacities
+            node_id = parse(Int, fields[1])                 # Node ID
+            in_degree_capacity = parse(Int, fields[2])      # In-degree capacity
+            out_degree_capacity = parse(Int, fields[3])     # Out-degree capacity
+
+            # Add the parsed data to the capacities dictionary
+            capacities[node_id] = (in_degree_capacity, out_degree_capacity)
+        end
+    end
 
     # return -
     return capacities;
