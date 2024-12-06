@@ -66,8 +66,19 @@ function readnodecapacityfile(filepath::String; comment::Char='#',
     capacities = Dict{Int64,Tuple{Int64,Int64}}()
     
     # TODO: implement this function
-    throw("The readnodecapacityfile function is not implemented yet.");
+    # Open the file for reading
+    open(filepath, "r") do file
+        for line in eachline(file)
+            # skip comments and empty lines, Using strip() to handle whitespace better
+            line = strip(line)
+            if (contains(line, comment) || isempty(line))
+                continue
+            end
 
-    # return -
-    return capacities;
+            parts = split(line, delim) .|> strip
+            capacities[parse(Int64, parts[1])] = (parse(Int64, parts[2]), parse(Int64, parts[3]))
+        end
+    end
+
+    return capacities
 end
