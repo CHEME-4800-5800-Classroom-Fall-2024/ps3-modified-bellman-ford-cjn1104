@@ -68,26 +68,17 @@ function readnodecapacityfile(filepath::String; comment::Char='#',
     # TODO: implement this function
     # Open the file for reading
     open(filepath, "r") do file
-        # Process each line in the file
         for line in eachline(file)
-            # Skip comment lines or empty lines
-            if startswith(line, comment) || isempty(line)
+            # skip comments and empty lines, Using strip() to handle whitespace better
+            line = strip(line)
+            if (contains(line, comment) || isempty(line))
                 continue
             end
 
-            # Split the line based on the delimiter
-            fields = split(line, delim)
-            
-            # Parse the node ID, in-degree, and out-degree capacities
-            node_id = parse(Int, fields[1])                 # Node ID
-            in_degree_capacity = parse(Int, fields[2])      # In-degree capacity
-            out_degree_capacity = parse(Int, fields[3])     # Out-degree capacity
-
-            # Add the parsed data to the capacities dictionary
-            capacities[node_id] = (in_degree_capacity, out_degree_capacity)
+            parts = split(line, delim) .|> strip
+            capacities[parse(Int64, parts[1])] = (parse(Int64, parts[2]), parse(Int64, parts[3]))
         end
     end
 
-    # return -
-    return capacities;
+    return capacities
 end
